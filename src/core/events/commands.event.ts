@@ -15,8 +15,14 @@ client.on(Events.InteractionCreate, async interaction => {
     return interaction.reply('Command not found or has no execution routine!');
   }
   try {
-    if (interaction.guild?.id)
+    if (interaction.guild?.id) {
+      await _userService.register({
+        guildId: interaction.guild.id ?? '',
+        userId: interaction.user.id,
+        name: interaction.user.username,
+      });
       await _userService.addXp(interaction.guild.id, interaction.user.id);
+    }
     await command.execute(interaction);
   } catch (error) {
     console.error(`Error executing ${interaction.commandName}`);

@@ -9,9 +9,7 @@ export class UserService {
       guildId: payload.guildId,
       userId: payload.userId,
     });
-    console.log({ user });
     if (user) return user;
-    console.log('Creating new user');
     const newUser = this.userRepo.create(payload);
     await this.userRepo.save(newUser);
     return newUser;
@@ -32,10 +30,8 @@ export class UserService {
   async addXp(guildId: string, userId: string, amount?: number) {
     const user = await this.getOrCreate(guildId, userId);
     user.getLevel();
-    console.log('before xp', { user });
     user.registerXp(amount);
     user.getLevel();
-    console.log('after xp', { user });
     await this.userRepo.save(user);
     return user;
   }

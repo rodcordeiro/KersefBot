@@ -1,6 +1,6 @@
 {
   "name": "nodejs-typescript",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -10,7 +10,7 @@
     "build": "tsc -b .",
     "format": "npm run lint && npm run pretty",
     "pretty": "prettier --write .",
-    "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ."
+    "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ./src"
   },
   "author": "",
   "license": "ISC",
