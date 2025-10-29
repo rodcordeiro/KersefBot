@@ -20,4 +20,4 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY package.json ./
 
 # Executa o código compilado
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/src/index.js"]
