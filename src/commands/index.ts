@@ -19,7 +19,13 @@ import path from 'path';
     commandsDir.map(async commandDir => {
       try {
         const command: BaseCommand = await import(
-          path.join(commandsPath, commandDir, `${commandDir}.command`)
+          path.join(
+            commandsPath,
+            commandDir,
+            process.env.NODE_ENV === 'production'
+              ? `${commandDir}.command.js`
+              : `${commandDir}.command.ts`,
+          )
         ).then(module => new module.default());
         return command;
       } catch (_err) {
