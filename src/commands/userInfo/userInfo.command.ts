@@ -11,13 +11,15 @@ export default class InfoCommand {
     .setType(ApplicationCommandType.User);
 
   async execute(interaction: UserContextMenuCommandInteraction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({
+      flags: 'Ephemeral',
+    });
     const user = interaction.targetUser;
     const embed = new EmbedBuilder()
       .setTitle(`${user.username} Info:`)
       .setFields([
         {
-          name: 'Username',
+          name: 'Name',
           value: `_${user.tag}_`,
           inline: true,
         },

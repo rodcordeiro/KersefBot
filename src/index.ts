@@ -7,8 +7,19 @@ import './commands';
 import './core/events';
 import { AppDataSource } from './database';
 
-AppDataSource.initialize().then(() =>
-  client.login(config.TOKEN).then(() => {
+console.log('Starting application...');
+console.log('Initializing database connection...');
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Database connection established successfully!');
+    console.log('Logging in to Discord...');
+    
+    return client.login(config.TOKEN);
+  })
+  .then(() => {
+    console.log('Discord login successful!');
+    
     setInterval(
       () => {
         const timer = setTimeout(
@@ -30,5 +41,8 @@ AppDataSource.initialize().then(() =>
       },
       10 * (60 * 1000),
     );
-  }),
-);
+  })
+  .catch((error) => {
+    console.error('Failed to initialize application:', error);
+    process.exit(1);
+  });

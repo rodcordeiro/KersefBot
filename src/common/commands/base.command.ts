@@ -1,8 +1,15 @@
-import { SlashCommandBuilder, ContextMenuCommandBuilder } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  ContextMenuCommandBuilder,
+  ChatInputCommandInteraction,
+  ContextMenuCommandInteraction,
+} from 'discord.js';
 
 export type BaseCommand = {
   data: SlashCommandBuilder | ContextMenuCommandBuilder;
-  execute: () => Promise<void>;
+  execute: (
+    _interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
+  ) => Promise<void>;
   autocomplete?: () => Promise<void>;
   modalHandler?: () => Promise<void>;
 };
