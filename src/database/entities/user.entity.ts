@@ -4,7 +4,7 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   PrimaryColumn,
-  Generated,
+  BeforeInsert,
 } from 'typeorm';
 
 @Entity({ name: 'kersef_tb_user' })
@@ -12,7 +12,7 @@ export class UserEntity {
   private interaction_xp: number = 10;
   public level_requirements: number = 15;
 
-  @Generated('uuid')
+  @Column({ type: 'varchar' })
   id!: string;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -40,8 +40,17 @@ export class UserEntity {
   last_update_power_level?: string;
 
   /*
+   * Hooks
+   */
+  @BeforeInsert()
+  private registerId() {
+    this.id = crypto.randomUUID();
+  }
+
+  /*
    * Methods
    */
+
   public calcXp() {
     this.interaction_xp = Math.floor(this.level * this.level) * 2;
   }

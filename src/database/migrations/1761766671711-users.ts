@@ -10,8 +10,6 @@ export class Users1761766671711 implements MigrationInterface {
             name: 'id',
             type: 'varchar',
             isPrimary: false,
-            isGenerated: true,
-            generationStrategy: 'uuid',
           },
           {
             name: 'userId',
