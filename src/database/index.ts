@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { GuildEntity, UserEntity } from './entities';
+
 import { config } from '../common/config';
+import path from 'path';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -10,7 +11,9 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PWD,
   database: process.env.DB_NAME,
-  entities: [GuildEntity, UserEntity],
-  synchronize: true,
+  entities: [path.join(__dirname, './entities/**/*.ts')],
+  migrations: [path.join(__dirname, './migrations/**/*.{ts,js}')],
+  migrationsRun: true,
+  migrationsTableName: 'kersef_migrations',
   debug: config.app.DEBUG,
 });

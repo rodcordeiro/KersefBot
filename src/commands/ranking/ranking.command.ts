@@ -36,12 +36,16 @@ export default class RankingCommand {
       fields.push({
         name: `${trophy(idx)} #${idx + 1}`,
         value: i.name,
-        inline: true,
+        inline: false,
       });
       fields.push({
         name: `\u200B`,
         value: `XP: ${i.level.toString()}`,
         inline: true,
+      });
+      fields.push({
+        name: `\u200B`,
+        value: `\u200B`,
       });
     });
     const embed = new EmbedBuilder()

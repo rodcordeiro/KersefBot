@@ -10,7 +10,10 @@
     "build": "tsc -b .",
     "format": "npm run lint && npm run pretty",
     "pretty": "prettier --write .",
-    "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ./src"
+    "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ./src",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate ./src/migrations/ -d ./src/database/index.ts",
+    "migration:run": "npm run typeorm -- migration:run -d ./src/database/index.ts"
   },
   "author": "",
   "license": "ISC",
