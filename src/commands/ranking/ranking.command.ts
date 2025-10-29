@@ -36,7 +36,7 @@ export default class RankingCommand {
       fields.push({
         name: `${trophy(idx)} #${idx + 1}`,
         value: i.name,
-        inline: false,
+        inline: true,
       });
       fields.push({
         name: `\u200B`,
