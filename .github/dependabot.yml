@@ -28,4 +28,3 @@ updates:
       - dependency-type: 'all'
     labels:
       - 'dependencies'
-

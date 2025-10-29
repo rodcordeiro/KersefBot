@@ -6,7 +6,7 @@
   "scripts": {
     "start:prod": "tsc -P . && node dist/index.js",
     "start:dev": "ts-node --transpileOnly src/index.ts",
-    "prebuild": "npm run format && rimraf dist",
+    "prebuild": "rimraf dist && npm run format",
     "build": "tsc -b .",
     "format": "npm run lint && npm run pretty",
     "pretty": "prettier --write .",

@@ -13,20 +13,24 @@ import path from 'path';
   const commandsPath = path.join(__dirname);
   const commandsDir = fs
     .readdirSync(commandsPath)
-    .filter(command => !command.endsWith('.ts') && !command.endsWith('.js'));
+    .filter(command => !command.includes('.ts') && !command.includes('.js'));
 
   const commands = await Promise.all(
     commandsDir.map(async commandDir => {
       try {
-        const command: BaseCommand = await import(
-          path.join(
-            commandsPath,
-            commandDir,
-            process.env.NODE_ENV === 'production'
-              ? `${commandDir}.command.js`
-              : `${commandDir}.command.ts`,
-          )
-        ).then(module => new module.default());
+        const commandPath = path.join(
+          commandsPath,
+          commandDir,
+          `${commandDir}.command`,
+        );
+        console.log({
+          commandPath,
+          commandDir,
+          command: `${commandDir}.command`,
+        });
+        const command: BaseCommand = await import(commandPath).then(
+          module => new module.default(),
+        );
         return command;
       } catch (_err) {
         console.log(`Failed to import ${commandDir}`);
