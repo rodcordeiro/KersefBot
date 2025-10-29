@@ -6,7 +6,7 @@ COPY package.json package-lock.json ./
 RUN npm i 
 
 COPY . .
-RUN npm build
+RUN npm run build
 
 FROM node:22-alpine AS runner
 WORKDIR /app
