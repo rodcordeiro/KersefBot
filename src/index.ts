@@ -3,23 +3,32 @@ import { ActivityType } from 'discord.js';
 
 import { config } from './common/config/app.config';
 import { client } from './core/discord/client.discord';
-import './commands';
-import './core/events';
 import { AppDataSource } from './database';
 
-console.log('Starting application...');
-console.log('Initializing database connection...');
+async function startBot() {
+  console.log('Starting application...');
+  console.log('Initializing database connection...');
 
-AppDataSource.initialize()
-  .then(() => {
+  try {
+    // 1. Initialize the database FIRST
+    await AppDataSource.initialize();
     console.log('Database connection established successfully!');
+
+    // 2. NOW import files that depend on the database
+    //    We use dynamic import() here to ensure they load
+    //    *after* AppDataSource.initialize() is complete.
+    console.log('Loading commands and events...');
+    await import('./commands');
+    await import('./core/events'); // This is your message handler file
+    console.log('Commands and events loaded successfully.');
+
+    // 3. Log in to Discord
     console.log('Logging in to Discord...');
-    
-    return client.login(config.TOKEN);
-  })
-  .then(() => {
+    await client.login(config.TOKEN);
     console.log('Discord login successful!');
-    
+
+    // 4. Set up your presence interval
+    // (Your existing logic from the .then() block)
     setInterval(
       () => {
         const timer = setTimeout(
@@ -41,8 +50,11 @@ AppDataSource.initialize()
       },
       10 * (60 * 1000),
     );
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error('Failed to initialize application:', error);
     process.exit(1);
-  });
+  }
+}
+
+// Start the bot
+startBot();

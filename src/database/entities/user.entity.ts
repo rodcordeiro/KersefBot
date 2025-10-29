@@ -3,8 +3,8 @@ import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity({ name: 'kersef_tb_user' })
 export class UserEntity extends BaseEntity {
-  private interaction_xp: number = 0;
-  public level_requirements: number = 0;
+  private interaction_xp: number = 10;
+  public level_requirements: number = 1;
 
   @Column({ type: 'varchar' })
   name!: string;
@@ -14,17 +14,18 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar' })
   guildId!: string;
   @Column({ type: 'int', default: 0 })
-  xp!: number;
+  xp: number = 0;
   @Column({ type: 'int', default: 1 })
-  level!: number;
+  level: number = 1;
 
   public calcXp() {
     this.interaction_xp = Math.floor(this.level * this.level) * 2;
   }
-  public registerXp() {
-    this.xp +=
-      this.interaction_xp + Math.floor(Math.random() * this.interaction_xp);
+  public registerXp(modifier?: number) {
+    const modifier_xp = modifier || this.interaction_xp;
+    this.xp += this.interaction_xp + Math.floor(Math.random() * modifier_xp);
   }
+
   public getLevel() {
     const xp = this.xp || 1;
     while (xp > this.level_requirements) {
