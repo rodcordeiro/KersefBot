@@ -4,19 +4,22 @@ import { client } from '../core/discord/client.discord';
 import { RegisterCommands } from './register';
 import { BaseCommand } from '../common/commands/base.command';
 import { ModalHandlerIdentifier } from '../common/interfaces/modalHandler.interface';
+import path from 'path';
 
 (async () => {
   client.commands = new Collection();
   client.modalHandlers = [] as ModalHandlerIdentifier[];
+
+  const commandsPath = path.join(__dirname);
   const commandsDir = fs
-    .readdirSync('./src/commands')
+    .readdirSync(commandsPath)
     .filter(command => !command.endsWith('.ts') && !command.endsWith('.js'));
 
   const commands = await Promise.all(
     commandsDir.map(async commandDir => {
       try {
         const command: BaseCommand = await import(
-          `./${commandDir}/${commandDir}.command`
+          path.join(commandsPath, commandDir, `${commandDir}.command`)
         ).then(module => new module.default());
         return command;
       } catch (_err) {
