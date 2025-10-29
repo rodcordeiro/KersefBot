@@ -33,7 +33,15 @@ export class UserEntity {
   xp: number = 0;
   @Column({ type: 'int', default: 1 })
   level: number = 1;
+  @Column({ type: 'int', nullable: true })
+  power_level?: number;
 
+  @Column({ type: 'timestamp', nullable: true })
+  last_update_power_level?: string;
+
+  /*
+   * Methods
+   */
   public calcXp() {
     this.interaction_xp = Math.floor(this.level * this.level) * 2;
   }
