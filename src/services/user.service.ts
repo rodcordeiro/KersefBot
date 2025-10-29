@@ -1,53 +1,50 @@
-import { FindOneOptions } from 'typeorm';
-import { UserRepository } from '../database/repositories/user.repository';
+import { AppDataSource } from '../database';
 import { UserEntity } from '../database/entities';
 
-export class UserServices {
-  static async CreateOrUpdate(payload: { id: string }) {
-    const guild = await UserRepository.findOneBy({ guildId: payload.id });
-    if (!guild) {
-      const newUser = UserRepository.create({
-        guildId: payload.id,
-      });
-      return await UserRepository.save(newUser);
+export class UserService {
+  private userRepo = AppDataSource.getRepository(UserEntity);
+
+  async register(payload: Partial<UserEntity>) {
+    const user = await this.userRepo.findOneBy({
+      guildId: payload.guildId,
+      userId: payload.userId,
+    });
+    console.log({ user });
+    if (user) return user;
+    console.log('Creating new user');
+    const newUser = this.userRepo.create(payload);
+    await this.userRepo.save(newUser);
+    return newUser;
+  }
+  async findById(guildId: string, userId: string) {
+    return await this.userRepo.findOneByOrFail({ guildId, userId });
+  }
+
+  async getOrCreate(guildId: string, userId: string) {
+    let user = await this.userRepo.findOneBy({ guildId, userId });
+    if (!user) {
+      user = this.userRepo.create({ guildId, userId });
+      await this.userRepo.save(user);
     }
-    return guild;
+    return user;
   }
 
-  static async Delete(payload: { id: string }) {
-    const guild = await UserRepository.findOneBy({ guildId: payload.id });
-    if (guild) await UserRepository.delete({ guildId: payload.id });
-  }
-
-  static async findOne(options: FindOneOptions<UserEntity>['where']) {
-    return await UserRepository.findOneOrFail({
-      where: options,
-    });
-  }
-
-  static async update(payload: UserEntity) {
-    const guild = await UserRepository.findOneByOrFail({
-      guildId: payload.guildId,
-    });
-    UserRepository.merge(guild, payload);
-    return await UserRepository.save(guild);
-  }
-
-  static async registerXp(payload: Partial<UserEntity>) {
-    console.log({ payload });
-    let user = await UserRepository.findOneBy({
-      discordId: payload.discordId,
-      guildId: payload.guildId,
-    });
-    console.log({ user });
-
-    if (!user) user = UserRepository.create(payload);
-    console.log({ user });
-    user.calcXp();
+  async addXp(guildId: string, userId: string, amount?: number) {
+    const user = await this.getOrCreate(guildId, userId);
     user.getLevel();
-    user.registerXp();
-    console.log({ user });
+    console.log('before xp', { user });
+    user.registerXp(amount);
+    user.getLevel();
+    console.log('after xp', { user });
+    await this.userRepo.save(user);
+    return user;
+  }
 
-    return await UserRepository.save(user);
+  async getLeaderboard(guildId: string) {
+    return this.userRepo.find({
+      where: { guildId },
+      order: { level: 'DESC', xp: 'DESC' },
+      take: 10,
+    });
   }
 }

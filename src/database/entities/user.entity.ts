@@ -1,18 +1,34 @@
-import { Entity, Column } from 'typeorm';
-import { BaseEntity } from '../../common/entities/base.entity';
+import {
+  Entity,
+  Column,
+  UpdateDateColumn,
+  CreateDateColumn,
+  PrimaryColumn,
+  Generated,
+} from 'typeorm';
 
 @Entity({ name: 'kersef_tb_user' })
-export class UserEntity extends BaseEntity {
+export class UserEntity {
   private interaction_xp: number = 10;
-  public level_requirements: number = 1;
+  public level_requirements: number = 15;
+
+  @Generated('uuid')
+  id!: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: string;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: string;
 
   @Column({ type: 'varchar' })
   name!: string;
 
-  @Column({ type: 'varchar' })
-  discordId!: string;
-  @Column({ type: 'varchar' })
+  @PrimaryColumn({ type: 'varchar' })
+  userId!: string;
+  @PrimaryColumn({ type: 'varchar' })
   guildId!: string;
+
   @Column({ type: 'int', default: 0 })
   xp: number = 0;
   @Column({ type: 'int', default: 1 })
@@ -21,17 +37,19 @@ export class UserEntity extends BaseEntity {
   public calcXp() {
     this.interaction_xp = Math.floor(this.level * this.level) * 2;
   }
-  public registerXp(modifier?: number) {
-    const modifier_xp = modifier || this.interaction_xp;
-    this.xp += this.interaction_xp + Math.floor(Math.random() * modifier_xp);
+  public registerXp(ammount?: number) {
+    const total_xp = ammount || this.interaction_xp;
+    this.xp += total_xp;
   }
-
   public getLevel() {
-    const xp = this.xp || 1;
-    while (xp > this.level_requirements) {
+    // const xp = this.xp || 1; // <-- This is a bug, remove it.
+
+    // Use the user's *actual* XP, and check "greater than or equal to"
+    while (this.xp >= this.level_requirements) {
       this.level++;
       this.increaseLvlRequirements();
     }
+    // Re-calculate the interaction_xp based on the *new* level
     this.calcXp();
   }
 

@@ -10,7 +10,7 @@ channel = "stable-24_05"
 requiredFiles = [".replit", "replit.nix", ".config"]
 
 [deployment]
-run = ["tsx", "index.ts"]
+run = ["tsx watch", "index.ts"]
 deploymentTarget = "cloudrun"
 ignorePorts = false
 

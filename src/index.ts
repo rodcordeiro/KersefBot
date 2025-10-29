@@ -3,6 +3,7 @@ import { ActivityType } from 'discord.js';
 
 import { config } from './common/config/app.config';
 import { client } from './core/discord/client.discord';
+// Import AppDataSource from its correct location (I'm assuming ./database)
 import { AppDataSource } from './database';
 
 async function startBot() {
@@ -19,7 +20,7 @@ async function startBot() {
     //    *after* AppDataSource.initialize() is complete.
     console.log('Loading commands and events...');
     await import('./commands');
-    await import('./core/events'); // This is your message handler file
+    await import('./core/events'); // This is your event handler file
     console.log('Commands and events loaded successfully.');
 
     // 3. Log in to Discord
@@ -28,7 +29,7 @@ async function startBot() {
     console.log('Discord login successful!');
 
     // 4. Set up your presence interval
-    // (Your existing logic from the .then() block)
+    // (Your existing logic)
     setInterval(
       () => {
         const timer = setTimeout(
