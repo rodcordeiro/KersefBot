@@ -3,13 +3,13 @@ import fs from 'fs';
 import { client } from '../core/discord/client.discord';
 import { RegisterCommands } from './register';
 import { BaseCommand } from '../common/commands/base.command';
-import { ModalHandlerIdentifier } from 'src/common/interfaces/modalHandler.interface';
+import { ModalHandlerIdentifier } from '../common/interfaces/modalHandler.interface';
 
 (async () => {
   client.commands = new Collection();
   client.modalHandlers = [] as ModalHandlerIdentifier[];
   const commandsDir = fs
-    .readdirSync('src/commands')
+    .readdirSync('./src/commands')
     .filter(command => !command.endsWith('.ts') && !command.endsWith('.js'));
 
   const commands = await Promise.all(
