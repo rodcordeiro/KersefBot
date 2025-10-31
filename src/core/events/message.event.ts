@@ -16,6 +16,7 @@ client.on(Events.MessageCreate, async message => {
       name: message.author.username,
       inguild: message.guildId,
       type: message.type,
+      content: message.content,
     });
 
     // await _guildService.CreateOrUpdate({ id: message.guildId ?? '' });
@@ -32,7 +33,7 @@ client.on(Events.MessageCreate, async message => {
     // console.log('guild_message::create', message);
     // await GuildServices.CreateOrUpdate({ id: message.guildId });
 
-    console.log('private_message::create', message.content);
+    // console.log('private_message::create', message.content);
   } catch (err) {
     console.error(err);
     return;
