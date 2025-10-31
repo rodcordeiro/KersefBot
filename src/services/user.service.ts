@@ -1,9 +1,15 @@
+import { Between } from 'typeorm';
 import { AppDataSource } from '../database';
-import { UserEntity, PowerLevelEntity } from '../database/entities';
+import {
+  UserEntity,
+  PowerLevelEntity,
+  UserXpLogEntity,
+} from '../database/entities';
 
 export class UserService {
   private userRepo = AppDataSource.getRepository(UserEntity);
   private powerRepo = AppDataSource.getRepository(PowerLevelEntity);
+  private xpLogRepo = AppDataSource.getRepository(UserXpLogEntity);
 
   async register(payload: Partial<UserEntity>) {
     const user = await this.userRepo.findOneBy({
@@ -35,6 +41,14 @@ export class UserService {
     user.registerXp(amount);
     user.getLevel();
     await this.userRepo.save(user);
+
+    await this.xpLogRepo.save(
+      this.xpLogRepo.create({
+        guildId,
+        userId,
+        amount: amount || user['interaction_xp'],
+      }),
+    );
     return user;
   }
 
@@ -70,6 +84,14 @@ export class UserService {
     return await this.powerRepo.save(entity);
   }
 
+  async getPowerlevelRanking(guildId: string) {
+    return this.powerRepo.find({
+      where: { guildId },
+      order: { score: 'DESC' },
+      take: 10,
+    });
+  }
+
   async isWarLord(guildId: string, userId: string) {
     const user = (
       await this.powerRepo.find({
@@ -85,5 +107,41 @@ export class UserService {
     if (!user) return true;
     if (user.userId === userId) return true;
     return false;
+  }
+
+  // 🧾 Novo método — logs dos últimos 7 dias
+  async getXpLogsLast7Days(guildId: string, userId?: string) {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now);
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    const where: Record<string, unknown> = {
+      guildId,
+      createdAt: Between(sevenDaysAgo, now),
+    };
+    if (userId) where.userId = userId;
+    return this.xpLogRepo.find({
+      where,
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // 🧮 Estatísticas agregadas (total de XP ganho nos últimos 7 dias)
+  async getXpGainedLast7Days(guildId: string, userId: string) {
+    const logs = await this.getXpLogsLast7Days(guildId, userId);
+    return logs.reduce((total, log) => total + log.amount, 0);
+  }
+
+  // 🧹 Novo método — limpeza de logs com mais de 31 dias
+  async pruneXpLogs() {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 31);
+
+    await this.xpLogRepo
+      .createQueryBuilder()
+      .delete()
+      .from('kersef_tb_xp_log')
+      .where('created_at < :cutoff', { cutoff })
+      .execute();
   }
 }

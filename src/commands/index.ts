@@ -23,11 +23,7 @@ import path from 'path';
           commandDir,
           `${commandDir}.command`,
         );
-        console.log({
-          commandPath,
-          commandDir,
-          command: `${commandDir}.command`,
-        });
+
         const command: BaseCommand = await import(commandPath).then(
           module => new module.default(),
         );

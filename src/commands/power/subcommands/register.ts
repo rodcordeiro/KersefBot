@@ -8,6 +8,7 @@ import {
   Attachment,
   Collection,
   Channel,
+  RoleCreateOptions,
 } from 'discord.js';
 
 import fs from 'fs';
@@ -21,6 +22,33 @@ import { UserService } from '../../../services/user.service';
 
 const _ocrService = new OcrService();
 const _userService = new UserService();
+
+interface iRole {
+  name: string;
+  // color: string;
+  reason: string;
+  mentionable: boolean;
+}
+
+const warlordRole = {
+  name: 'Warlord de Kersef',
+
+  reason:
+    'O campeão supremo entre os guerreiros. Seu poder ecoa pelos campos de batalha',
+  mentionable: true,
+};
+const jarlRole = {
+  name: 'Jarl das Chamas',
+  //  color: 'Red',
+  reason: 'Segundo lugar no ranking de Power Level',
+  mentionable: true,
+};
+const guardianRole = {
+  name: 'Guardião dos Portões',
+  //  color: 'Red',
+  reason: 'Terceiro lugar no ranking de Power Level',
+  mentionable: true,
+};
 
 export class PowerRegisterCommand {
   data = new SlashCommandSubcommandBuilder()
@@ -79,19 +107,16 @@ export class PowerRegisterCommand {
     }
   }
 
-  async attributeWarlord(message: Message) {
+  async attributeRole(message: Message, role: iRole) {
     const roles = await message.guild?.roles.fetch();
-    const role = roles?.find(role => role.name === 'Warlord');
 
-    if (role) role.delete();
+    const older = roles?.find(i => i.name === role.name);
+    console.log({ older, role });
+    if (older) await older.delete();
 
-    const newRole = await message.guild?.roles.create({
-      name: 'Warlord',
-      color: 'Red',
-      reason: 'Warlord is the powerest member of the guild',
-      mentionable: true,
-    });
-    await message.member?.roles.add(newRole!);
+    await message.guild?.roles
+      .create({ ...role } as RoleCreateOptions)
+      .then(async i => await message.member?.roles.add(i));
   }
 
   /**
@@ -125,13 +150,37 @@ export class PowerRegisterCommand {
         userId: message.author.id,
         guildId: message.guildId!,
       });
-      const isWarlord = await _userService.isWarLord(
-        message.guildId!,
-        message.author.id,
-      );
-      if (isWarlord) {
-        await this.attributeWarlord(message);
-        await message.reply(':trophy: Parabéns!! Você é o novo Warlord!');
+
+      const [warlord, jarl, guardian, _rest] =
+        await _userService.getPowerlevelRanking(message.guildId!);
+
+      await _userService.addXp(message.guildId!, message.author.id, 250);
+
+      if (
+        warlord.userId === message.author.id &&
+        warlord.nick === fields?.nick
+      ) {
+        await this.attributeRole(message, warlordRole);
+        await message.reply(
+          `:trophy: Parabéns!! Você é o novo ${warlordRole.name}!\n${warlordRole.reason}`,
+        );
+        return;
+      }
+      if (jarl.userId === message.author.id && jarl.nick === fields?.nick) {
+        await this.attributeRole(message, jarlRole);
+        await message.reply(
+          `:trophy: Parabéns!! Você é o novo ${jarlRole.name}!\n${jarlRole.reason}`,
+        );
+        return;
+      }
+      if (
+        guardian.userId === message.author.id &&
+        guardian.nick === fields?.nick
+      ) {
+        await this.attributeRole(message, guardianRole);
+        await message.reply(
+          `:trophy: Parabéns!! Você é o novo ${guardianRole.name}!\n${guardianRole.reason}`,
+        );
         return;
       }
       await message.reply('✅ Power level registrado com sucesso!');

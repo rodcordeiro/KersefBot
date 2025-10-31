@@ -21,6 +21,7 @@ async function startBot() {
     console.log('Loading commands and events...');
     await import('./commands');
     await import('./core/events'); // This is your event handler file
+    // await import('./core/crons');
     console.log('Commands and events loaded successfully.');
 
     // 3. Log in to Discord

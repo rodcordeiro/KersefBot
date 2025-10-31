@@ -8,11 +8,9 @@ declare global {
       readonly APP_ID: string;
       readonly DEV_APP_ID: string; // Dev env
 
-      /** AZURE */
-      /**  Azure Personal Acces Token */
-      readonly AZURE_PAT: string;
-      /**  Azure WIQL Query id */
-      readonly QUERY_ID: string;
+      /** Guild */
+      /**  Kersef ID */
+      readonly KERSEF_ID: string;
     }
   }
 }

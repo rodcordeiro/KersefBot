@@ -21,7 +21,6 @@ export default class RankingCommand {
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.reply({
       content: 'Processando',
-      flags: 'Ephemeral',
     });
 
     const leaderboard = (
@@ -46,12 +45,17 @@ export default class RankingCommand {
       fields.push({
         name: `\u200B`,
         value: `\u200B`,
+        inline: true,
       });
     });
     const embed = new EmbedBuilder()
       .setColor(Colors.DarkGreen)
-      .setTitle(`Ranking de interações`)
-      .setDescription(`Ranking de interações no server`)
+      .setTitle(`:fire: Ranking de Influência — Vozes de Kersef Hell`)
+      .setDescription(
+        `Nos salões ecoam as vozes que mantêm viva a chama da irmandade.
+Estes são os mensageiros, bardos e líderes cuja presença molda o espírito da guilda.
+A influência não vem da força — mas das palavras que unem Kersef Hell.`,
+      )
       .setAuthor({
         name: 'Kersef',
         iconURL: 'https://rodcordeiro.github.io/shares/img/KERSEF-HELL.png',

@@ -1,4 +1,4 @@
 # .husky/pre-commit
-prettier $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts)$' | sed 's| |\\ |g') --write --ignore-unknown
 eslint $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts)$' | sed 's| |\\ |g') --max-warnings 5  --fix  --ignore-pattern 'dist/*' 
-git update-index --again  
+prettier $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts)$' | sed 's| |\\ |g') --write --ignore-unknown
+git update-index --again
