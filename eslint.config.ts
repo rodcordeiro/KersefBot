@@ -13,6 +13,7 @@ export default defineConfig([
   },
   {
     rules: {
+      'no-useless-scape': 'off',
       'no-unused-vars': [
         'warn',
         {

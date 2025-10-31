@@ -23,7 +23,7 @@ client.on(Events.InteractionCreate, async interaction => {
       });
       await _userService.addXp(interaction.guild.id, interaction.user.id);
     }
-    await command.execute(interaction);
+    await command?.execute(interaction);
   } catch (error) {
     console.error(`Error executing ${interaction.commandName}`);
     console.error(error);
