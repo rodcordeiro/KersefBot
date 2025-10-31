@@ -5,6 +5,9 @@ import {
   SlashCommandSubcommandBuilder,
   TextChannel,
   ThreadChannel,
+  Attachment,
+  Collection,
+  Channel,
 } from 'discord.js';
 
 import fs from 'fs';
@@ -132,8 +135,8 @@ export class PowerRegisterCommand {
         'Iniciando processo de registro. Agora envie o print de seus atributos da aba avançada.',
       flags: MessageFlags.Ephemeral,
     });
-
-    const channel = interaction.channel;
+    const channel: Channel | boolean | undefined =
+      interaction.channel as Channel;
     if (
       !channel ||
       (!channel.isTextBased() && !(channel instanceof ThreadChannel))

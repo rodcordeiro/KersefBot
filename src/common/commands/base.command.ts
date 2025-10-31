@@ -6,7 +6,14 @@ import {
   SlashCommandSubcommandsOnlyBuilder,
   AutocompleteInteraction,
   ModalSubmitInteraction,
+  MessageContextMenuCommandInteraction,
+  UserContextMenuCommandInteraction,
 } from 'discord.js';
+
+export type CommandInteractionType =
+  | ChatInputCommandInteraction
+  | MessageContextMenuCommandInteraction
+  | UserContextMenuCommandInteraction;
 
 export type BaseCommandType = {
   data:
@@ -15,7 +22,7 @@ export type BaseCommandType = {
     | SlashCommandSubcommandsOnlyBuilder
     | ContextMenuCommandBuilder;
   maintenance?: boolean;
-  execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+  execute: (interaction: CommandInteractionType) => Promise<void>;
   maintenanceActions: (
     interaction: ChatInputCommandInteraction,
   ) => Promise<void>;
@@ -33,6 +40,7 @@ export abstract class BaseCommand {
     this.data = data;
     this.maintenance = maintenance;
   }
+  abstract execute(interaction: CommandInteractionType): Promise<void>;
   async maintenanceActions(interaction: ChatInputCommandInteraction) {
     await interaction.reply({
       content: 'Whops. Command under maintenance, try it later',
