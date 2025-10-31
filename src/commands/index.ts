@@ -2,7 +2,7 @@ import { Collection } from 'discord.js';
 import fs from 'fs';
 import { client } from '../core/discord/client.discord';
 import { RegisterCommands } from './register';
-import { BaseCommand } from '../common/commands/base.command';
+import { BaseCommand, BaseCommandType } from '../common/commands/base.command';
 import { ModalHandlerIdentifier } from '../common/interfaces/modalHandler.interface';
 import path from 'path';
 
@@ -43,7 +43,10 @@ import path from 'path';
     }),
   );
   commands.filter(Boolean).map(command => {
-    client.commands?.set(command?.data.name as string, command);
+    client.commands?.set(
+      command?.data.name as string,
+      command as BaseCommandType,
+    );
   });
   RegisterCommands();
 })();

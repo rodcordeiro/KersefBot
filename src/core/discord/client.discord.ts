@@ -1,9 +1,9 @@
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
-import { BaseCommand } from 'src/common/commands/base.command';
+import { BaseCommandType } from 'src/common/commands/base.command';
 import { ModalHandlerIdentifier } from 'src/common/interfaces/modalHandler.interface';
 
 export const client: {
-  commands?: Collection<string, BaseCommand | undefined>;
+  commands?: Collection<string, BaseCommandType | undefined>;
   modalHandlers?: ModalHandlerIdentifier[];
 } & Client = new Client({
   intents: [
