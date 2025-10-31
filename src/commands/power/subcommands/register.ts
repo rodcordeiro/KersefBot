@@ -79,6 +79,22 @@ export class PowerRegisterCommand {
     }
   }
 
+  async attributeWarlord(message: Message) {
+    if (!(await _userService.isWarLord(message.guildId!, message.author.id)))
+      return;
+    const roles = await message.guild?.roles.fetch();
+    const role = roles?.find(role => role.name === 'Warlord');
+    console.log({ role });
+    if (role) role.delete();
+
+    const newRole = await message.guild?.roles.create({
+      name: 'Warlord',
+      color: 'Red',
+      reason: 'Warlord role created',
+    });
+    console.log({ newRole });
+    await message.member?.roles.add(newRole!);
+  }
   /**
    * Processes the collected message and registers the power level.
    */
@@ -110,6 +126,8 @@ export class PowerRegisterCommand {
         userId: message.author.id,
         guildId: message.guildId!,
       });
+
+      await this.attributeWarlord(message);
 
       await message.reply('✅ Power level registrado com sucesso!');
     } catch (err) {

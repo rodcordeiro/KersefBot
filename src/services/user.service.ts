@@ -69,4 +69,21 @@ export class UserService {
     const entity = this.powerRepo.create(payload);
     return await this.powerRepo.save(entity);
   }
+
+  async isWarLord(guildId: string, userId: string) {
+    const user = (
+      await this.powerRepo.find({
+        where: {
+          guildId,
+        },
+        order: {
+          score: 'DESC',
+        },
+        take: 1,
+      })
+    ).at(0);
+    if (!user) return true;
+    if (user.userId === userId) return true;
+    return false;
+  }
 }
