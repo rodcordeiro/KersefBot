@@ -76,7 +76,7 @@ export class PowerRankingCommand {
     });
     rest.map((i, idx) => {
       fields.push({
-        name: `#${idx + 1} Nick`,
+        name: `#${idx + 4} Nick`,
         value: i.nick,
         inline: true,
       });

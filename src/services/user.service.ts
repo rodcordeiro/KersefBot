@@ -56,7 +56,7 @@ export class UserService {
     return this.userRepo.find({
       where: { guildId },
       order: { level: 'DESC', xp: 'DESC' },
-      take: 10,
+      take: 5,
     });
   }
   async registerPowerLevel(payload: Partial<PowerLevelEntity>) {
@@ -122,6 +122,9 @@ export class UserService {
     if (userId) where.userId = userId;
     return this.xpLogRepo.find({
       where,
+      relations: {
+        user: true,
+      },
       order: { createdAt: 'DESC' },
     });
   }
@@ -140,7 +143,7 @@ export class UserService {
     await this.xpLogRepo
       .createQueryBuilder()
       .delete()
-      .from('kersef_tb_xp_log')
+      .from('kersef_tb_user_xp_log')
       .where('created_at < :cutoff', { cutoff })
       .execute();
   }
