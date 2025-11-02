@@ -9,6 +9,7 @@ import {
   Collection,
   Channel,
   RoleCreateOptions,
+  Colors,
 } from 'discord.js';
 
 import fs from 'fs';
@@ -32,20 +33,20 @@ interface iRole {
 
 const warlordRole = {
   name: 'Warlord de Kersef',
-
+  color: Colors.Gold,
   reason:
     'O campeão supremo entre os guerreiros. Seu poder ecoa pelos campos de batalha',
   mentionable: true,
 };
 const jarlRole = {
   name: 'Jarl das Chamas',
-  //  color: 'Red',
+  color: Colors.Red,
   reason: 'Segundo lugar no ranking de Power Level',
   mentionable: true,
 };
 const guardianRole = {
   name: 'Guardião dos Portões',
-  //  color: 'Red',
+  color: Colors.Blurple,
   reason: 'Terceiro lugar no ranking de Power Level',
   mentionable: true,
 };
@@ -111,7 +112,6 @@ export class PowerRegisterCommand {
     const roles = await message.guild?.roles.fetch();
 
     const older = roles?.find(i => i.name === role.name);
-    console.log({ older, role });
     if (older) await older.delete();
 
     await message.guild?.roles
@@ -136,7 +136,7 @@ export class PowerRegisterCommand {
 
     try {
       const stats = await _ocrService.extractStats(filePath);
-      const score = await _ocrService.calculateScore(
+      const score = _ocrService.calculateScore(
         stats,
         fields!.classe,
         fields!.foco as 'DN' | 'MG',
