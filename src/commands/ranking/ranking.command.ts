@@ -14,6 +14,7 @@ function trophy(level: number) {
   if (level < 1) return ':first_place:';
   if (level < 2) return ':second_place:';
   if (level < 3) return ':third_place:';
+  return '';
 }
 
 export default class RankingCommand {
