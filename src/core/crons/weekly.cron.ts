@@ -9,25 +9,25 @@ import {
 } from 'discord.js';
 import { config } from '../../common/config';
 
-// const EXECUTION_CRON_TIME = '0 0 * * 0'; // De minuto em minuto
-const EXECUTION_CRON_TIME = '* * * * *'; // De minuto em minuto
+const EXECUTION_CRON_TIME = '0 0 * * 0'; // De minuto em minuto
+// const EXECUTION_CRON_TIME = '* * * * *'; // De minuto em minuto
 
 const firstRole = {
   name: 'Voz de Asgard',
-  color: Colors.Green,
+  colors: Colors.Green,
   reason:
     'A presença que mais ecoa entre os salões da guilda — fala, inspira e comanda',
   mentionable: true,
 };
 const secondRole = {
   name: 'Mensageiro de Odin',
-  color: Colors.Navy,
+  colors: Colors.Navy,
   reason: 'O Segundo colocado em interações',
   mentionable: true,
 };
 const thirdRole = {
   name: 'Bardo de Midgard',
-  color: Colors.Blurple,
+  colors: Colors.Blurple,
   reason: 'O Terceiro colocado em interações',
   mentionable: true,
 };

@@ -28,8 +28,6 @@ export default class RankingCommand {
     const leaderboard = await _userService
       .getXpLogsLast7Days(interaction.guildId!)
       .then(logs => {
-        console.log({ logs });
-
         const res = {} as Record<
           string,
           { ammount: number; user?: UserEntity }
@@ -53,6 +51,7 @@ export default class RankingCommand {
           .filter(Boolean)
           .filter(log => !!log.user),
       )
+      .then(logs => logs.slice(0, 8))
       .then(logs =>
         logs.map(log => {
           log.user?.getLevel();
