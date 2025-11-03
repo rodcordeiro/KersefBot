@@ -7,35 +7,13 @@ import {
 } from 'discord.js';
 import { UserService } from '../../services/user.service';
 import { UserEntity } from '../../database/entities';
+import { formatWydNumber } from '../../common/utils/message.util';
 
 const _userService = new UserService();
 function trophy(level: number) {
   if (level < 1) return ':first_place:';
   if (level < 2) return ':second_place:';
   if (level < 3) return ':third_place:';
-}
-
-/**
- * Formats a number using "k", "kk", or "kkk" notation.
- *
- * Examples:
- *  - 999 => "999"
- *  - 1000 => "1k"
- *  - 2500 => "2.5k"
- *  - 1000000 => "1kk"
- *  - 1500000 => "1.5kk"
- *  - 1000000000 => "1kkk"
- */
-export function formatWydNumber(num: number): string {
-  if (num < 1000) {
-    return num.toString();
-  } else if (num < 1_000_000) {
-    return `${(num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1)}k`;
-  } else if (num < 1_000_000_000) {
-    return `${(num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1)}kk`;
-  } else {
-    return `${(num / 1_000_000_000).toFixed(num % 1_000_000_000 === 0 ? 0 : 1)}kkk`;
-  }
 }
 
 export default class RankingCommand {

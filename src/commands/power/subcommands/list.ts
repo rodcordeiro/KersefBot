@@ -6,6 +6,7 @@ import {
   SlashCommandSubcommandBuilder,
 } from 'discord.js';
 import { UserService } from '../../../services/user.service';
+import { formatWydNumber } from '../../../common/utils/message.util';
 
 const _service = new UserService();
 
@@ -18,97 +19,106 @@ export class PowerRankingCommand {
     await interaction.reply({
       content: 'Processando informações',
     });
-    const [first, second, third, ...rest] = await _service.getPowerlevelRanking(
-      interaction.guildId ?? '',
-    );
+    try {
+      const [first, second, third, ...rest] =
+        await _service.getPowerlevelRanking(interaction.guildId ?? '');
 
-    const fields: APIEmbedField[] = [];
+      const fields: APIEmbedField[] = [];
 
-    fields.push({
-      name: 'Nick',
-      value: first.nick,
-      inline: true,
-    });
-    fields.push({
-      name: 'Score',
-      value: first.score.toString(),
-      inline: true,
-    });
-    fields.push({
-      name: `:crossed_swords: Warlord de Kersef`,
-      value: '\u200B',
-      inline: true,
-    });
-    fields.push({
-      name: 'Nick',
-      value: second.nick,
-      inline: true,
-    });
-    fields.push({
-      name: 'Score',
-      value: second.score.toString(),
-      inline: true,
-    });
-    fields.push({
-      name: `:heart_on_fire: Jarl das Chamas`,
-      value: '\u200B',
-      inline: true,
-    });
-    fields.push({
-      name: 'Nick',
-      value: third.nick,
-      inline: true,
-    });
-    fields.push({
-      name: 'Score',
-      value: third.score.toString(),
-      inline: true,
-    });
-    fields.push({
-      name: `:shield: Guardião dos Portões`,
-      value: '\u200B',
-      inline: true,
-    });
-    fields.push({
-      name: '\u200B',
-      value: 'Demais posições:',
-      inline: false,
-    });
-    rest.map((i, idx) => {
       fields.push({
-        name: `#${idx + 4} Nick`,
-        value: i.nick,
+        name: 'Nick',
+        value: first.nick,
         inline: true,
       });
       fields.push({
         name: 'Score',
-        value: i.score.toString(),
+        value: formatWydNumber(first.score),
+        inline: true,
+      });
+      fields.push({
+        name: `:crossed_swords: Warlord de Kersef`,
+        value: '\u200B',
+        inline: true,
+      });
+      fields.push({
+        name: 'Nick',
+        value: second.nick,
+        inline: true,
+      });
+      fields.push({
+        name: 'Score',
+        value: formatWydNumber(second.score),
+        inline: true,
+      });
+      fields.push({
+        name: `:heart_on_fire: Jarl das Chamas`,
+        value: '\u200B',
+        inline: true,
+      });
+      fields.push({
+        name: 'Nick',
+        value: third.nick,
+        inline: true,
+      });
+      fields.push({
+        name: 'Score',
+        value: formatWydNumber(third.score),
+        inline: true,
+      });
+      fields.push({
+        name: `:shield: Guardião dos Portões`,
+        value: '\u200B',
         inline: true,
       });
       fields.push({
         name: '\u200B',
-        value: '\u200B',
-        inline: true,
+        value: 'Demais posições:',
+        inline: false,
       });
-    });
+      rest.map((i, idx) => {
+        fields.push({
+          name: `#${idx + 4} Nick`,
+          value: i.nick,
+          inline: true,
+        });
+        fields.push({
+          name: 'Score',
+          value: formatWydNumber(i.score),
+          inline: true,
+        });
+        fields.push({
+          name: '\u200B',
+          value: '\u200B',
+          inline: true,
+        });
+      });
 
-    const embed = new EmbedBuilder()
-      .setColor(Colors.DarkGreen)
-      .setTitle(`:fire: Ranking de Poder — Guerreiros de Kersef Hell`)
-      .setDescription(
-        `As chamas da glória consomem o campo de batalha, e apenas os mais fortes se erguem entre os heróis de Kersef Hell.
-Estes são os guerreiros que moldam o destino com poder e honra.
-Somente os dignos conquistam seus títulos.`,
-      )
-      .setAuthor({
-        name: 'Kersef',
-        iconURL: 'https://rodcordeiro.github.io/shares/img/KERSEF-HELL.png',
-      })
-      .setThumbnail('https://rodcordeiro.github.io/shares/img/KERSEF-HELL.png')
-      .addFields(fields)
-      .addFields({ name: '\u200B', value: '\u200B' });
-    return await interaction.editReply({
-      embeds: [embed],
-    });
+      const embed = new EmbedBuilder()
+        .setColor(Colors.DarkGreen)
+        .setTitle(`:fire: Ranking de Poder — Guerreiros de Kersef Hell`)
+        .setDescription(
+          `As chamas da glória consomem o campo de batalha, e apenas os mais fortes se erguem entre os heróis de Kersef Hell.
+      Estes são os guerreiros que moldam o destino com poder e honra.
+      Somente os dignos conquistam seus títulos.`,
+        )
+        .setAuthor({
+          name: 'Kersef',
+          iconURL: 'https://rodcordeiro.github.io/shares/img/KERSEF-HELL.png',
+        })
+        .setThumbnail(
+          'https://rodcordeiro.github.io/shares/img/KERSEF-HELL.png',
+        )
+        .addFields(fields)
+        .addFields({ name: '\u200B', value: '\u200B' });
+      return await interaction.editReply({
+        embeds: [embed],
+      });
+    } catch (err) {
+      console.error(err);
+      return await interaction.editReply({
+        content:
+          '⚠️ Ocorreu um erro ao processar sua solicitação. Avise o alto escalão que eu me perdi nos pergaminhos!',
+      });
+    }
   }
 }

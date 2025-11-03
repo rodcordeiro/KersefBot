@@ -45,12 +45,12 @@ async function processUser(
   await member?.roles.add(await roles.create(role as RoleCreateOptions));
 }
 async function giveWeeklyInteractionReward() {
+  console.debug('Executing weekly interaction rewarding job...');
+
   try {
-    console.log('Executing weekly cron job...');
     const isReady = client.isReady();
     if (!isReady) return;
     const _service = new UserService();
-    console.log('service instantiated');
     const kersef = await client.guilds.fetch(config.app.KERSEF_ID);
 
     if (!kersef) return;
@@ -103,5 +103,6 @@ async function giveWeeklyInteractionReward() {
 }
 
 schedule(EXECUTION_CRON_TIME, async () => {
+  console.debug('Executing weekly cron job...');
   await giveWeeklyInteractionReward();
 });

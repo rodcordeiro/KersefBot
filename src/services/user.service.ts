@@ -88,7 +88,7 @@ export class UserService {
     return this.powerRepo.find({
       where: { guildId },
       order: { score: 'DESC' },
-      take: 10,
+      take: 9,
     });
   }
 
