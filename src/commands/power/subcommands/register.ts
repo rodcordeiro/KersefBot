@@ -33,7 +33,7 @@ interface iRole {
 
 const warlordRole = {
   name: 'Warlord de Kersef',
-  colors: Colors.Gold,
+  colors: Colors.DarkNavy,
   reason:
     'O campeão supremo entre os guerreiros. Seu poder ecoa pelos campos de batalha',
   mentionable: true,
@@ -46,7 +46,7 @@ const jarlRole = {
 };
 const guardianRole = {
   name: 'Guardião dos Portões',
-  colors: Colors.Blurple,
+  colors: Colors.Yellow,
   reason: 'Terceiro lugar no ranking de Power Level',
   mentionable: true,
 };
