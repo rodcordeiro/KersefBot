@@ -9,7 +9,6 @@ import {
   Collection,
   Channel,
   RoleCreateOptions,
-  Colors,
 } from 'discord.js';
 
 import fs from 'fs';
@@ -33,20 +32,20 @@ interface iRole {
 
 const warlordRole = {
   name: 'Warlord de Kersef',
-  colors: Colors.Blurple,
+  // colors: Colors.Blurple,
   reason:
     'O campeão supremo entre os guerreiros. Seu poder ecoa pelos campos de batalha',
   mentionable: true,
 };
 const jarlRole = {
   name: 'Jarl das Chamas',
-  colors: Colors.Red,
+  // colors: Colors.Red,
   reason: 'Segundo lugar no ranking de Power Level',
   mentionable: true,
 };
 const guardianRole = {
   name: 'Guardião dos Portões',
-  colors: Colors.Yellow,
+  // colors: Colors.Yellow,
   reason: 'Terceiro lugar no ranking de Power Level',
   mentionable: true,
 };
@@ -109,11 +108,19 @@ export class PowerRegisterCommand {
   }
 
   async attributeRole(message: Message, role: iRole) {
-    const roles = await message.guild?.roles.fetch();
+    const roles = message.guild?.roles;
+    const rolesList = await roles
+      ?.fetch()
+      .then(roles => roles.entries())
+      .then(roles => Array.from(roles))
+      .then(roles => roles.map(([_, role]) => role));
 
-    const older = roles?.find(i => i.name === role.name);
-    if (older) await older.delete();
+    const willDelete = rolesList?.filter(r => role.name === r.name);
+    for await (const deletable of willDelete ?? []) {
+      await deletable.delete().catch(console.error);
+    }
 
+    console.debug('[RoleCreateOptions]', role);
     await message.guild?.roles
       .create({ ...role } as RoleCreateOptions)
       .then(async i => await message.member?.roles.add(i));
@@ -166,6 +173,7 @@ export class PowerRegisterCommand {
         );
         return;
       }
+
       if (jarl.userId === message.author.id && jarl.nick === fields?.nick) {
         await this.attributeRole(message, jarlRole);
         await message.reply(
@@ -173,6 +181,7 @@ export class PowerRegisterCommand {
         );
         return;
       }
+
       if (
         guardian.userId === message.author.id &&
         guardian.nick === fields?.nick
